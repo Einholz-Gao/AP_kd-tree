@@ -1,4 +1,4 @@
-
+// version 1
 #define k 2
 
 struct Node{
