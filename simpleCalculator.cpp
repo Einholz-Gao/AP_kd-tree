@@ -1,4 +1,4 @@
-// simple
+// simple_cal
 #include<iostream>
 // sum
 double asd(){
