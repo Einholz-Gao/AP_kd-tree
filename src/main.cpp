@@ -123,12 +123,12 @@ std::string vecToStr(const std::vector<int>& vec) {
 /* print-out example:
        /-----(8, 9)
 /-----(3, 8)
-|     \-----(6, 3)
+|      \-----(6, 3)
 (2, 5)
 |             /-----(-2, 10)
 |      /-----(-3, 5)
 \-----(1, 4)
-      \-----(0, 3)
+       \-----(0, 3)
 */
 void printKDTreeBranches(Node* node, bool left, const std::string& prefix) {
   if (node->right) {
@@ -139,7 +139,7 @@ void printKDTreeBranches(Node* node, bool left, const std::string& prefix) {
   std::cout << "-----";
   std::cout << node->data << std::endl;
   if (node->left) {
-    printKDTreeBranches(node->left, true, prefix + (left? "      " : "|     "));
+    printKDTreeBranches(node->left, true, prefix + (left? "       " : "|      "));
   }
 }
 
