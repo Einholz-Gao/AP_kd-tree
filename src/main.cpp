@@ -62,10 +62,37 @@ std::ostream& operator<<(std::ostream& os, const std::vector<T>& vec) {
   return os;
 }
 
-void printKDTree(Node* node) {
-  int level = 0;
+std::string vecToStr(const std::vector<int>& vec) {
+  std::string s = "";
   
-  std::cout << node->data;
+  if (!vec.empty()) {
+    s.push_back('(');
+    for (int i = 0; i < vec.size() - 1; i++) {
+      s.append(std::to_string(vec[i]) + ",");
+    }
+    s.append(std::to_string(vec.back()) + ")");
+  }
+
+  return s;
+}
+
+/*TODO: print-out example:
+            (51,75)
+       ________|________
+       |               |
+    (25,40)         (70,70)
+   ____|____       ____|____
+   |       |       |       |
+(10,30) (35,90) (55,1) (60,80)
+                   |____
+                       |
+                     (56, 30)
+*/
+
+void printKDTree(Node* node) {
+  // int level = 0;
+  
+  
 
 }
 
@@ -87,7 +114,8 @@ int main() {
     kd_insert(&root, point);
   }
 
-  printKDTree(&root);
+  // printKDTree(&root);
+  std::cout << vecToStr(std::vector<int> (6, 1));
 
   return 0;
 }
