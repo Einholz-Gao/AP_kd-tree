@@ -2,7 +2,7 @@
 #include <vector>
 #include <list>
 
-#define K 2
+#define K 3
 
 struct Node {
   std::vector<int> data;
@@ -167,14 +167,14 @@ void printKDTree(Node* root) {
 */
 
 int main() {
-  std::list<std::vector<int>> points = {{2, 5},
-                                        {3, 8},
-                                        {6, 3},
-                                        {8, 9},
-                                        {1, 4},
-                                        {0, 3},
-                                        {-3, 5},
-                                        {-2, 10}};
+  std::list<std::vector<int>> points = {{2, 5, 0},
+                                        {3, 8, -1},
+                                        {6, 3, -2},
+                                        {8, 9, -5},
+                                        {1, 4, 5},
+                                        {0, 3, 7},
+                                        {-3, 5, 11},
+                                        {-2, 10, -6}};
   auto root_point = points.front();
   points.pop_front();
   
