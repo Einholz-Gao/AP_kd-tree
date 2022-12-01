@@ -120,7 +120,40 @@ std::string vecToStr(const std::vector<int>& vec) {
   return s;
 }
 
-/*TODO: print-out example:
+/* print-out example:
+       /-----(8, 9)
+/-----(3, 8)
+|     \-----(6, 3)
+(2, 5)
+|             /-----(-2, 10)
+|      /-----(-3, 5)
+\-----(1, 4)
+      \-----(0, 3)
+*/
+void printKDTreeBranches(Node* node, bool left, const std::string& prefix) {
+  if (node->right) {
+    printKDTreeBranches(node->right, false, prefix + (left? "|      " : "       "));
+  }
+  std::cout << prefix;
+  std::cout << (left? '\\' : '/');
+  std::cout << "-----";
+  std::cout << node->data << std::endl;
+  if (node->left) {
+    printKDTreeBranches(node->left, true, prefix + (left? "      " : "|     "));
+  }
+}
+
+void printKDTree(Node* root) {
+  if (root->right) {
+    printKDTreeBranches(root->right, false, "");
+  }
+  std::cout << root->data << std::endl;
+  if (root->left) {
+    printKDTreeBranches(root->left, true, "");
+  }
+}
+
+/*TODO: another print-out example:
             (51,75)
        ________|________
        |               |
@@ -133,33 +166,25 @@ std::string vecToStr(const std::vector<int>& vec) {
                      (56, 30)
 */
 
-void printKDTree(Node* node) {
-  // int level = 0;
-  
-  
-
-}
-
 int main() {
   std::list<std::vector<int>> points = {{2, 5},
                                         {3, 8},
                                         {6, 3},
-                                        {8, 9}};
+                                        {8, 9},
+                                        {1, 4},
+                                        {0, 3},
+                                        {-3, 5},
+                                        {-2, 10}};
   auto root_point = points.front();
   points.pop_front();
-  // std::cout << "root_point = " << root_point[0] << " " << root_point[1] << std::endl;
-  // std::cout << "points = " << std::endl;
-  // for (auto& elem : points) {
-  //   std::cout << elem[0] << ' ' << elem[1] << std::endl;
-  // }
   
   Node root = Node(root_point);
   for (auto& point : points) {
     kd_insert(&root, point);
   }
 
-  // printKDTree(&root);
-  std::cout << vecToStr(std::vector<int> (6, 1));
+  // std::cout << vecToStr(std::vector<int> (6, 1));
+  printKDTree(&root);
 
   return 0;
 }
