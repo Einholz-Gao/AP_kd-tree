@@ -15,6 +15,50 @@ struct Node {
   Node() {}
 };
 
+// std::vector<int> findmin(Node* node, int dim, int cd){
+//   if (node == NULL) std::cout << "node is NULL!" << std::endl;
+//   if (cd == dim){
+//     // current dim = dim, left subtree is the smaller.
+//     if (node->left == NULL) return node->data;
+//     else return findmin(node->left, dim, (cd+1) % K);
+//   }
+//   else{
+//     // current dim != dim, we must compare two subtrees.
+//     if (findmin(node->left, dim, (cd+1) % K) <findmin(node->right, dim, (cd+1) % K))
+//       return findmin(node->left, dim, (cd+1) % K);
+//     else
+//       return findmin(node->right, dim, (cd+1) % K);
+//   }
+// }
+
+void kd_delete(Node* node, std::vector<int>& point, int cd){
+
+  if (node == NULL){
+    std::cout << "point not found!" << std::endl;
+  }
+
+  if (point == node->data){
+    // this is the point to delete
+    if (node->left != NULL){
+      //has a left subtree
+      node = node->left;
+      int cd = (cd+10) % K;
+      kd_delete(node, point, cd);
+    }
+    else if (node->right != NULL){
+      //has a right subtree
+      node = node->right;
+      int cd = (cd+10) % K;
+      kd_delete(node, point, cd);
+    }
+    else{
+      // this is a leaf, can be directly remove
+      node = NULL;
+    }
+  }
+  //else if (point[cd] < node->data[cd])
+}
+
 void kd_insert(Node* node, std::vector<int>& point) {
   int cd = 0;
   bool inserted = false;
