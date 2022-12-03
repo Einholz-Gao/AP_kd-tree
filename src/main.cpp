@@ -224,7 +224,7 @@ int main() {
   // points.pop_front();
   
   Node root = Node(root_point);
-  for (int i = 0; i < points.size(); i++) {
+  for (int i = 1; i < points.size(); i++) {
     kd_insert(&root, points[i]);
   }
 
