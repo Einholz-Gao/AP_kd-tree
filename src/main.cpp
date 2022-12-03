@@ -3,6 +3,10 @@
 #include <vector>
 #include <list>
 
+#include<sstream>
+#include<fstream>
+#include <iomanip>
+
 #define K 3
 
 struct Node {
@@ -15,6 +19,40 @@ struct Node {
 
   Node() {}
 };
+
+std::list<std::vector<int>> read_from_csv( std::string filename="rff.csv")
+{
+    std::ifstream csv_data(filename, std::ios::in);
+    std::string line;
+    if (!csv_data.is_open())
+    {
+        std::cout << "Error: opening file fail" << std::endl;
+        std::exit(1);
+    }
+    // std::istringstream sin;                                 // read line into stream
+    std::string elem;
+    std::list<std::vector<int>> points;
+
+    // read header
+    std::getline(csv_data, line);
+    // read data
+    while (std::getline(csv_data, line))
+    {
+        std::istringstream sin(line);
+        sin.clear();
+        sin.str(line);
+        std::vector<int> point;
+        for(int i = 0;i<K;i++){
+            int i_elem;
+            getline(sin, elem, ',');
+            i_elem = atoi(elem.c_str());
+            point.push_back(i_elem);
+        }
+    points.push_back(point);
+    }
+    csv_data.close();
+    return points;
+}
 
 std::vector<int> findmin(Node* node, int dim, int cd){
   if (node == NULL) std::cout << "node is NULL!" << std::endl;
@@ -175,14 +213,15 @@ void printKDTree(Node* root) {
 */
 
 int main() {
-  std::list<std::vector<int>> points = {{2, 5, 0},
-                                        {3, 8, -1},
-                                        {6, 3, -2},
-                                        {8, 9, -5},
-                                        {1, 4, 5},
-                                        {0, 3, 7},
-                                        {-3, 5, 11},
-                                        {-2, 10, -6}};
+  // std::list<std::vector<int>> points = {{2, 5, 0},
+  //                                       {3, 8, -1},
+  //                                       {6, 3, -2},
+  //                                       {8, 9, -5},
+  //                                       {1, 4, 5},
+  //                                       {0, 3, 7},
+  //                                       {-3, 5, 11},
+  //                                       {-2, 10, -6}};
+  std::list<std::vector<int>> points = read_from_csv();
   auto root_point = points.front();
   points.pop_front();
   
@@ -193,7 +232,7 @@ int main() {
 
   // std::cout << vecToStr(std::vector<int> (6, 1));
   printKDTree(&root);
-  auto del_p = points.end();
-  kd_delete(&root, root_point, 0);
+  // auto del_p = points.end();
+  // kd_delete(&root, root_point, 0);
   return 0;
 }
