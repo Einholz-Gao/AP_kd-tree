@@ -12,13 +12,15 @@
 struct Node {
   std::vector<int> data;
   Node *left = NULL, *right = NULL;
-  
+
   Node(std::vector<int> vec) {
     data = vec;
   }
 
   Node() {}
 };
+
+
 
 std::vector<std::vector<int>> read_from_csv( std::string filename="rff.csv")
 {
@@ -52,56 +54,86 @@ std::vector<std::vector<int>> read_from_csv( std::string filename="rff.csv")
     return points;
 }
 
-std::vector<int> findmin(Node* node, int dim, int cd){
-  if (node == NULL) std::cout << "node is NULL!" << std::endl;
-  if (cd == dim){
-    // current dim = dim, left subtree is the smaller.
-    if (node->left == NULL) return node->data;
-    else return findmin(node->left, dim, (cd+1) % K);
-  }
-  else{
-    // current dim != dim, we must compare two subtrees.
-    if (findmin(node->left, dim, (cd+1) % K) <findmin(node->right, dim, (cd+1) % K))
-      return node->left->data;
+Node *minNode(Node *x, Node *y, Node *z, int d)
+{
+    Node *res = x;
+    if (y != NULL && y->data[d] < res->data[d])
+       res = y;
+    if (z != NULL && z->data[d] < res->data[d])
+       res = z;
+    return res;
+}
+
+// Recursively finds minimum of d'th dimension in KD tree
+Node *findMin(Node* root, int d, unsigned depth)
+{
+    if (root == NULL)
+        return NULL;
+
+    // cd -> current dimention
+    unsigned cd = depth % K;
+
+    // Compare point with root with respect to cd (Current dimension)
+    if (cd == d)
+    {
+        if (root->left == NULL)
+            return root;
+        return findMin(root->left, d, depth+1);
+    }
     else
-      return node->right->data;
-  }
+    return minNode(root,
+               findMin(root->left, d, depth+1),
+               findMin(root->right, d, depth+1), d);
 }
 
-void kd_delete(Node* node, std::vector<int>& point, int cd){
+Node *kd_delete(Node *root, std::vector<int> point, int depth)
+{
+    // Given point is not present
+    if (root == NULL)
+        return NULL;
 
-  if (node == NULL){
-    std::cout << "point not found!" << std::endl;
-  }
-  int next_cd = (cd+1) % K;
-    // left branch
-    if (point == node->data){
-      // if the node is to delete
-      if (node->left != NULL){
-        node->data = findmin(node->left, cd, next_cd);
-        kd_delete(node->left, node->data, next_cd);
-      }
-      else if (node->right != NULL){
-        node->data = findmin(node->right, cd, next_cd);
-        kd_delete(node->right, node->data, next_cd);
-      }
-      else {
-        node = NULL;
-        // this is a leaf, can be removed.
-      }
-    }
-    else{
-      // if the node is not to delete
-      if (point[cd] < node->data[cd]) {
-        kd_delete(node->left, point, next_cd);
+    // Find dimension of current node
+    int cd = depth % K;
+
+    // If the point to be deleted is present at root
+    if (root->data == point)
+    {
+        // If right subtree is not NULL
+        if (root->right != NULL)
+        {
+            // Find minimum of root's dimension in right subtree
+            Node *min = findMin(root->right, cd, 0);
+
+            // Copy the minimum to root
+            for (int i=0; i<K; i++)
+                root->data[i] = min->data[i];
+
+            // swap subtrees and use min(cd) from new right tree.
+            root->right = kd_delete(root->right, min->data, depth+1);
         }
-      else {
-        kd_delete(node->right, point, next_cd);
+        // If the left is not NULL
+        else if (root->left != NULL)
+        {
+            Node *min = findMin(root->left, cd, 0);
+            for (int i=0; i<K; i++)
+                root->data[i] = min->data[i];
+            root->right = kd_delete(root->left, min->data, depth+1);
         }
+        else // If node to be deleted is leaf node
+        {
+            delete root;
+            return NULL;
+        }
+        return root;
     }
+
+    // This is not the point:
+    if (point[cd] < root->data[cd])
+        root->left = kd_delete(root->left, point, depth+1);
+    else
+        root->right = kd_delete(root->right, point, depth+1);
+    return root;
 }
-
-
 
 void kd_insert(Node* node, std::vector<int>& point) {
   int cd = 0;
@@ -152,7 +184,7 @@ std::ostream& operator<<(std::ostream& os, const std::vector<T>& vec) {
 
 std::string vecToStr(const std::vector<int>& vec) {
   std::string s = "";
-  
+
   if (!vec.empty()) {
     s.push_back('(');
     for (int i = 0; i < vec.size() - 1; i++) {
@@ -222,7 +254,7 @@ int main() {
   std::vector<std::vector<int>> points = read_from_csv();
   auto root_point = points.front();
   // points.pop_front();
-  
+
   Node root = Node(root_point);
   for (int i = 1; i < points.size(); i++) {
     kd_insert(&root, points[i]);
@@ -230,7 +262,11 @@ int main() {
 
   // std::cout << vecToStr(std::vector<int> (6, 1));
   printKDTree(&root);
-  // auto del_p = points.end();
-  // kd_delete(&root, root_point, 0);
+
+  std::vector<int> del_point = {8, 9, -5};
+  Node *del_root = kd_delete(&root, del_point, 0);
+
+  std::cout << "after deletion of point: " << del_point << std::endl;
+  printKDTree(del_root);
   return 0;
 }
