@@ -20,7 +20,7 @@ struct Node {
   Node() {}
 };
 
-std::list<std::vector<int>> read_from_csv( std::string filename="rff.csv")
+std::vector<std::vector<int>> read_from_csv( std::string filename="rff.csv")
 {
     std::ifstream csv_data(filename, std::ios::in);
     std::string line;
@@ -31,7 +31,7 @@ std::list<std::vector<int>> read_from_csv( std::string filename="rff.csv")
     }
     // std::istringstream sin;                                 // read line into stream
     std::string elem;
-    std::list<std::vector<int>> points;
+    std::vector<std::vector<int>> points;
 
     // read header
     std::getline(csv_data, line);
@@ -219,13 +219,13 @@ int main() {
   //                                       {0, 3, 7},
   //                                       {-3, 5, 11},
   //                                       {-2, 10, -6}};
-  std::list<std::vector<int>> points = read_from_csv();
+  std::vector<std::vector<int>> points = read_from_csv();
   auto root_point = points.front();
-  points.pop_front();
+  // points.pop_front();
   
   Node root = Node(root_point);
-  for (auto& point : points) {
-    kd_insert(&root, point);
+  for (int i = 0; i < points.size(); i++) {
+    kd_insert(&root, points[i]);
   }
 
   // std::cout << vecToStr(std::vector<int> (6, 1));
