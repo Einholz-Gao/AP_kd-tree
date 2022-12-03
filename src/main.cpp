@@ -38,17 +38,15 @@ std::list<std::vector<int>> read_from_csv( std::string filename="rff.csv")
     // read data
     while (std::getline(csv_data, line))
     {
-        std::istringstream sin(line);
-        sin.clear();
-        sin.str(line);
+        std::istringstream sin(line);                       // Read the entire line of string line into the string stream sin
         std::vector<int> point;
         for(int i = 0;i<K;i++){
             int i_elem;
-            getline(sin, elem, ',');
-            i_elem = atoi(elem.c_str());
-            point.push_back(i_elem);
+            getline(sin, elem, ',');                        // Read the characters in the string stream sin into the elem string, separated by ", "
+            i_elem = atoi(elem.c_str());                    // transfer string to int.
+            point.push_back(i_elem);                        // add into point.
         }
-    points.push_back(point);
+    points.push_back(point);                                // add into points.
     }
     csv_data.close();
     return points;
