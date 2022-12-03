@@ -65,74 +65,74 @@ Node *minNode(Node *x, Node *y, Node *z, int d)
 }
 
 // Recursively finds minimum of d'th dimension in KD tree
-Node *findMin(Node* root, int d, unsigned depth)
+Node *findMin(Node* node, int d, unsigned depth)
 {
-    if (root == NULL)
+    if (node == NULL)
         return NULL;
 
     // cd -> current dimention
     unsigned cd = depth % K;
 
-    // Compare point with root with respect to cd (Current dimension)
+    // Compare point with node with respect to cd (Current dimension)
     if (cd == d)
     {
-        if (root->left == NULL)
-            return root;
-        return findMin(root->left, d, depth+1);
+        if (node->left == NULL)
+            return node;
+        return findMin(node->left, d, depth+1);
     }
     else
-    return minNode(root,
-               findMin(root->left, d, depth+1),
-               findMin(root->right, d, depth+1), d);
+    return minNode(node,
+               findMin(node->left, d, depth+1),
+               findMin(node->right, d, depth+1), d);
 }
 
-Node *kd_delete(Node *root, std::vector<int> point, int depth)
+Node *kd_delete(Node *node, std::vector<int> point, int depth)
 {
     // Given point is not present
-    if (root == NULL)
+    if (node == NULL)
         return NULL;
 
     // Find dimension of current node
     int cd = depth % K;
 
     // If the point to be deleted is present at root
-    if (root->data == point)
+    if (node->data == point)
     {
         // If right subtree is not NULL
-        if (root->right != NULL)
+        if (node->right != NULL)
         {
             // Find minimum of root's dimension in right subtree
-            Node *min = findMin(root->right, cd, 0);
+            Node *min = findMin(node->right, cd, 0);
 
-            // Copy the minimum to root
+            // Copy the minimum to node
             for (int i=0; i<K; i++)
-                root->data[i] = min->data[i];
+                node->data[i] = min->data[i];
 
             // swap subtrees and use min(cd) from new right tree.
-            root->right = kd_delete(root->right, min->data, depth+1);
+            node->right = kd_delete(node->right, min->data, depth+1);
         }
         // If the left is not NULL
-        else if (root->left != NULL)
+        else if (node->left != NULL)
         {
-            Node *min = findMin(root->left, cd, 0);
+            Node *min = findMin(node->left, cd, 0);
             for (int i=0; i<K; i++)
-                root->data[i] = min->data[i];
-            root->right = kd_delete(root->left, min->data, depth+1);
+                node->data[i] = min->data[i];
+            node->right = kd_delete(node->left, min->data, depth+1);
         }
         else // If node to be deleted is leaf node
         {
-            delete root;
+            delete node;
             return NULL;
         }
-        return root;
+        return node;
     }
 
     // This is not the point:
-    if (point[cd] < root->data[cd])
-        root->left = kd_delete(root->left, point, depth+1);
+    if (point[cd] < node->data[cd])
+        node->left = kd_delete(node->left, point, depth+1);
     else
-        root->right = kd_delete(root->right, point, depth+1);
-    return root;
+        node->right = kd_delete(node->right, point, depth+1);
+    return node;
 }
 
 void kd_insert(Node* node, std::vector<int>& point) {
