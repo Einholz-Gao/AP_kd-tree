@@ -116,7 +116,7 @@ Node *kd_delete(Node *node, std::vector<int> point, int depth)
             Node *min = findMin(node->left, cd, 0);
             for (int i=0; i<K; i++)
                 node->data[i] = min->data[i];
-            node->right = kd_delete(node->left, min->data, depth+1);
+            node->left = kd_delete(node->left, min->data, depth+1);
         }
         else // If node to be deleted is leaf node
         {
@@ -262,7 +262,7 @@ int main() {
   // std::cout << vecToStr(std::vector<int> (6, 1));
   printKDTree(&root);
 
-  std::vector<int> del_point = {8, 9, -5};
+  std::vector<int> del_point = {1, 4, 5};
   Node *del_root = kd_delete(&root, del_point, 0);
 
   std::cout << "after deletion of point: " << del_point << std::endl;
