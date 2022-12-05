@@ -9,6 +9,7 @@
 
 #define K 3
 
+// define a Node struct
 struct Node {
   std::vector<int> data;
   Node *left = NULL, *right = NULL;
@@ -20,8 +21,7 @@ struct Node {
   Node() {}
 };
 
-
-
+// read points from csv file
 std::vector<std::vector<int>> read_from_csv( std::string filename="rff.csv")
 {
     std::ifstream csv_data(filename, std::ios::in);
@@ -134,16 +134,23 @@ Node *kd_delete(Node *node, std::vector<int> point, int depth)
     return node;
 }
 
+/*insert point to a kd-tree
+  @param node the root node of the tree or sub-tree
+  @param point the point to be inserted
+*/
 void kd_insert(Node* node, std::vector<int>& point) {
-  int cd = 0;
-  bool inserted = false;
+  int cd = 0;  // cutting dimension
+  bool inserted = false;  // a flag indicating if insertion is completed
   while (!inserted) {
     // left branch
     if (point[cd] < node->data[cd]) {
+      // if the left branch of the node is empty
+      // insert the point to that branch
       if (node->left == NULL) {
         node->left = new Node(point);
         inserted = true;
       }
+      // if not, then inspect the left branch in next iteration
       else {
         cd = (cd+1) % K;
         node = node->left;
@@ -151,10 +158,13 @@ void kd_insert(Node* node, std::vector<int>& point) {
     }
     // right branch
     else if (point[cd] > node->data[cd]) {
+      // if the right branch of the node is empty
+      // insert the point to that branch
       if (node->right == NULL) {
         node->right = new Node(point);
         inserted = true;
       }
+      // if not, then inspect the right branch in next iteration
       else {
         cd = (cd+1) % K;
         node = node->right;
@@ -168,6 +178,7 @@ void kd_insert(Node* node, std::vector<int>& point) {
   }
 }
 
+// overload "<<" operator to make print-out easier
 template <typename T>
 std::ostream& operator<<(std::ostream& os, const std::vector<T>& vec) {
   if (!vec.empty()) {
@@ -181,6 +192,7 @@ std::ostream& operator<<(std::ostream& os, const std::vector<T>& vec) {
   return os;
 }
 
+// convert a vector to a string
 std::string vecToStr(const std::vector<int>& vec) {
   std::string s = "";
 
@@ -252,14 +264,12 @@ int main() {
   //                                       {-2, 10, -6}};
   std::vector<std::vector<int>> points = read_from_csv();
   auto root_point = points.front();
-  // points.pop_front();
 
   Node root = Node(root_point);
   for (int i = 1; i < points.size(); i++) {
     kd_insert(&root, points[i]);
   }
 
-  // std::cout << vecToStr(std::vector<int> (6, 1));
   printKDTree(&root);
 
   std::vector<int> del_point = {1, 4, 5};
