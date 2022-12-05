@@ -39,15 +39,20 @@ std::vector<std::vector<int>> read_from_csv( std::string filename="rff.csv")
     // read data
     while (std::getline(csv_data, line))
     {
-        std::istringstream line_stream(line);                       // Read the entire line of string line into the string stream sin
+        // Read the entire line of string line into the string stream sin
+        std::istringstream line_stream(line);
         std::vector<int> point;
         for(int i = 0;i<K;i++){
             unsigned i_elem;
-            getline(line_stream, elem, ',');                        // Read the characters in the string stream sin into the elem string, separated by ", "
-            i_elem = atoi(elem.c_str());                    // transfer string to int.
-            point.push_back(i_elem);                        // add into point.
+            // Read the characters in the string stream sin into the elem string, separated by ", "
+            getline(line_stream, elem, ',');
+            // transfer string to int.
+            i_elem = atoi(elem.c_str());
+            // add into point.
+            point.push_back(i_elem);
         }
-    points.push_back(point);                                // add into points.
+    // add into points.
+    points.push_back(point);
     }
     csv_data.close();
     return points;
