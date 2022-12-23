@@ -34,9 +34,13 @@ We have generated the following functions:
 
 ## How to build and run
 We have a `Makefile` in the folder `/src`.
+
 Now go to the `/src` folder and run the command `make` in the terminal.
+
 Then you will get a executable file `main`.
+
 Run it. You will get the output:
+
 ```bash
               /-----(9, 10, -4)
        /-----(8, 9, -5)
