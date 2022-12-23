@@ -5,6 +5,7 @@
 The k-d tree is a binary tree in which every node is a k-dimensional point. Every non-leaf node can be thought of as implicitly generating a splitting hyperplane that divides the space into two parts, known as half-spaces. Points to the left of this hyperplane are represented by the left subtree of that node and points to the right of the hyperplane are represented by the right subtree. The hyperplane direction is chosen in the following way: every node in the tree is associated with one of the k dimensions, with the hyperplane perpendicular to that dimension's axis. You can find more [here](https://en.wikipedia.org/wiki/K-d_tree)
 
 ![image](figures/kd-example.png)
+(Source: https://www.cs.cmu.edu/~ckingsf/bioinfo-lectures/kdtrees.pdf)
 
 We have generated the following functions:
 - Kd-tree construction
@@ -13,7 +14,6 @@ We have generated the following functions:
 
 |Points|
 |--------|
-|Points
 |2,5,0|
 |3,8,-1|
 |6,3,-2|
