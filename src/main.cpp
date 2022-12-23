@@ -1,4 +1,3 @@
-#include <cstddef>
 #include <iostream>
 #include <vector>
 #include <list>
@@ -69,7 +68,7 @@ Node *minNode(Node *x, Node *y, Node *z, int d)
 }
 
 // Recursively finds minimum of d'th dimension in KD tree
-Node *findMin(Node* node, int d, unsigned depth)
+Node *findMin(Node* node, unsigned d, unsigned depth)
 {
     if (node == NULL)
         return NULL;
@@ -184,8 +183,8 @@ void kd_insert(Node* node, std::vector<int>& point) {
 }
 
 // overload "<<" operator to make print-out easier
-template <typename T>
-std::ostream& operator<<(std::ostream& os, const std::vector<T>& vec) {
+//template <typename T>
+std::ostream& operator<<(std::ostream& os, const std::vector<int>& vec) {
   if (!vec.empty()) {
     os << "(";
     for (int i = 0; i < vec.size()-1; i++) {
