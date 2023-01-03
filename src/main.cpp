@@ -20,7 +20,10 @@ struct Node {
   Node() {}
 };
 
-// read points from csv file
+/*
+  read points from csv file
+  @param filename the name of the file. It's a constant becouse the file must be "rff.csv".
+*/
 std::vector<std::vector<int>> read_from_csv( std::string filename="rff.csv")
 {
     std::ifstream csv_data(filename, std::ios::in);
@@ -57,17 +60,28 @@ std::vector<std::vector<int>> read_from_csv( std::string filename="rff.csv")
     return points;
 }
 
-Node *minNode(Node *x, Node *y, Node *z, int d)
+/*
+  Finds the smallest node of three nodes
+  @param x the 1st node
+  @param y the 2nd node
+  @param z the 3rd node
+  @param d the dimension of the smallest value you want to find(d'th dimension in KD tree)
+*/
+Node *minNode(Node* x, Node* y, Node* z, int d)
 {
-    Node *res = x;
+    Node* res = x;
     if (y != NULL && y->data[d] < res->data[d])
        res = y;
     if (z != NULL && z->data[d] < res->data[d])
        res = z;
     return res;
 }
-
-// Recursively finds minimum of d'th dimension in KD tree
+/*
+  Recursively finds minimum of d'th dimension in KD tree
+  @param node the root node of the tree or sub-tree
+  @param d the dimension of the smallest value you want to find(d'th dimension in KD tree)
+  @param depth the current depth(x,y,or z...) of the tree
+*/
 Node *findMin(Node* node, unsigned d, unsigned depth)
 {
     if (node == NULL)
@@ -89,7 +103,12 @@ Node *findMin(Node* node, unsigned d, unsigned depth)
                findMin(node->right, d, depth+1), d);
 }
 
-Node *kd_delete(Node *node, std::vector<int> point, int depth)
+/*delete point to a kd-tree
+  @param node the root node of the tree or sub-tree
+  @param point the point to be inserted
+  @param depth the current depth(dimension) of the tree
+*/
+Node *kd_delete(Node* node, std::vector<int> point, int depth)
 {
     // Given point is not present
     if (node == NULL)
