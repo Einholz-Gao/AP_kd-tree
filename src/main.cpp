@@ -26,6 +26,7 @@ struct Node {
 /*
   read points from csv file
   @param filename the name of the file. It's a constant becouse the file must be "rff.csv".
+  @returns a matrix of the points, in the form vector<vector<int>>
 */
 std::vector<std::vector<int>> read_from_csv( std::string filename="rff.csv")
 {
@@ -69,6 +70,7 @@ std::vector<std::vector<int>> read_from_csv( std::string filename="rff.csv")
   @param y the 2nd node
   @param z the 3rd node
   @param d the dimension of the smallest value you want to find(d'th dimension in KD tree)
+  @returns a shared_ptr to the smallest node of three nodes
 */
 std::shared_ptr<Node> minNode(std::shared_ptr<Node> x, std::shared_ptr<Node> y, std::shared_ptr<Node> z, int d)
 {
@@ -84,6 +86,7 @@ std::shared_ptr<Node> minNode(std::shared_ptr<Node> x, std::shared_ptr<Node> y, 
   @param node the root node of the tree or sub-tree
   @param d the dimension of the smallest value you want to find(d'th dimension in KD tree)
   @param depth the current depth(x,y,or z...) of the tree
+  @returns a share_ptr to the minimum of the d'th dimensioin in KD tree
 */
 std::shared_ptr<Node> findMin(std::shared_ptr<Node> node, unsigned d, unsigned depth)
 {
@@ -110,6 +113,7 @@ std::shared_ptr<Node> findMin(std::shared_ptr<Node> node, unsigned d, unsigned d
   @param node the root node of the tree or sub-tree
   @param point the point to be inserted
   @param depth the current depth(dimension) of the tree
+  @returns a shared_ptr to the root of the trimmed KD tree
 */
 std::shared_ptr<Node> kd_delete(std::shared_ptr<Node> node, std::vector<int> point, int depth)
 {
@@ -220,7 +224,10 @@ std::ostream& operator<<(std::ostream& os, const std::vector<int>& vec) {
   return os;
 }
 
-// convert a vector to a string
+/*convert a vector to a string with brackets on two sides
+  @param vec the vector to be converted
+  @returns the converted string
+*/
 std::string vecToStr(const std::vector<int>& vec) {
   std::string s = "";
 
@@ -245,6 +252,12 @@ std::string vecToStr(const std::vector<int>& vec) {
 \-----(1, 4)
        \-----(0, 3)
 */
+/*print KD Tree branches, auxiliary function for printing KD Tree,
+  to be called inside printKDTree().
+  @param node current node
+  @param left tells whether the branch to be printed is a left branch
+  @param prefix the accumulated prefix for formatting
+*/
 void printKDTreeBranches(std::shared_ptr<Node> node, bool left, const std::string& prefix) {
   if (node->right) {
     printKDTreeBranches(node->right, false, prefix + (left? "|      " : "       "));
@@ -258,6 +271,9 @@ void printKDTreeBranches(std::shared_ptr<Node> node, bool left, const std::strin
   }
 }
 
+/*print KD Tree
+  @param root the root of KD Tree
+*/
 void printKDTree(std::shared_ptr<Node> root) {
   if (root->right) {
     printKDTreeBranches(root->right, false, "");
