@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <list>
+#include <memory>
 
 #include<sstream>
 #include<fstream>
@@ -11,7 +12,9 @@
 // define a Node struct
 struct Node {
   std::vector<int> data;
-  Node *left = NULL, *right = NULL;
+  // Node *left = nullptr, *right = nullptr;
+  std::shared_ptr<Node> left;
+  std::shared_ptr<Node> right;
 
   Node(std::vector<int> vec) {
     data = vec;
@@ -67,12 +70,12 @@ std::vector<std::vector<int>> read_from_csv( std::string filename="rff.csv")
   @param z the 3rd node
   @param d the dimension of the smallest value you want to find(d'th dimension in KD tree)
 */
-Node *minNode(Node* x, Node* y, Node* z, int d)
+std::shared_ptr<Node> minNode(std::shared_ptr<Node> x, std::shared_ptr<Node> y, std::shared_ptr<Node> z, int d)
 {
-    Node* res = x;
-    if (y != NULL && y->data[d] < res->data[d])
+    std::shared_ptr<Node> res = x;
+    if (y != nullptr && y->data[d] < res->data[d])
        res = y;
-    if (z != NULL && z->data[d] < res->data[d])
+    if (z != nullptr && z->data[d] < res->data[d])
        res = z;
     return res;
 }
@@ -82,10 +85,10 @@ Node *minNode(Node* x, Node* y, Node* z, int d)
   @param d the dimension of the smallest value you want to find(d'th dimension in KD tree)
   @param depth the current depth(x,y,or z...) of the tree
 */
-Node *findMin(Node* node, unsigned d, unsigned depth)
+std::shared_ptr<Node> findMin(std::shared_ptr<Node> node, unsigned d, unsigned depth)
 {
-    if (node == NULL)
-        return NULL;
+    if (node == nullptr)
+        return nullptr;
 
     // cd -> current dimention
     unsigned cd = depth % K;
@@ -93,7 +96,7 @@ Node *findMin(Node* node, unsigned d, unsigned depth)
     // Compare point with node with respect to cd (Current dimension)
     if (cd == d)
     {
-        if (node->left == NULL)
+        if (node->left == nullptr)
             return node;
         return findMin(node->left, d, depth+1);
     }
@@ -108,11 +111,11 @@ Node *findMin(Node* node, unsigned d, unsigned depth)
   @param point the point to be inserted
   @param depth the current depth(dimension) of the tree
 */
-Node *kd_delete(Node* node, std::vector<int> point, int depth)
+std::shared_ptr<Node> kd_delete(std::shared_ptr<Node> node, std::vector<int> point, int depth)
 {
     // Given point is not present
-    if (node == NULL)
-        return NULL;
+    if (node == nullptr)
+        return nullptr;
 
     // Find dimension of current node
     int cd = depth % K;
@@ -120,11 +123,11 @@ Node *kd_delete(Node* node, std::vector<int> point, int depth)
     // If the point to be deleted is present at root
     if (node->data == point)
     {
-        // If right subtree is not NULL
-        if (node->right != NULL)
+        // If right subtree is not nullptr
+        if (node->right != nullptr)
         {
             // Find minimum of root's dimension in right subtree
-            Node *min = findMin(node->right, cd, 0);
+            std::shared_ptr<Node> min = findMin(node->right, cd, 0);
 
             // Copy the minimum to node
             for (int i=0; i<K; i++)
@@ -133,18 +136,18 @@ Node *kd_delete(Node* node, std::vector<int> point, int depth)
             // swap subtrees and use min(cd) from new right tree.
             node->right = kd_delete(node->right, min->data, depth+1);
         }
-        // If the left is not NULL
-        else if (node->left != NULL)
+        // If the left is not nullptr
+        else if (node->left != nullptr)
         {
-            Node *min = findMin(node->left, cd, 0);
+            std::shared_ptr<Node> min = findMin(node->left, cd, 0);
             for (int i=0; i<K; i++)
                 node->data[i] = min->data[i];
             node->left = kd_delete(node->left, min->data, depth+1);
         }
         else // If node to be deleted is leaf node
         {
-            delete node;
-            return NULL;
+            // delete node;
+            return nullptr;
         }
         return node;
     }
@@ -161,7 +164,7 @@ Node *kd_delete(Node* node, std::vector<int> point, int depth)
   @param node the root node of the tree or sub-tree
   @param point the point to be inserted
 */
-void kd_insert(Node* node, std::vector<int>& point) {
+void kd_insert(std::shared_ptr<Node> node, const std::vector<int>& point) {
   int cd = 0;  // cutting dimension
   bool inserted = false;  // a flag indicating if insertion is completed
   while (!inserted) {
@@ -169,8 +172,9 @@ void kd_insert(Node* node, std::vector<int>& point) {
     if (point[cd] < node->data[cd]) {
       // if the left branch of the node is empty
       // insert the point to that branch
-      if (node->left == NULL) {
-        node->left = new Node(point);
+      if (node->left == nullptr) {
+        // node->left = new Node(point);
+        node->left = std::make_shared<Node>(point);
         inserted = true;
       }
       // if not, then inspect the left branch in next iteration
@@ -183,8 +187,9 @@ void kd_insert(Node* node, std::vector<int>& point) {
     else if (point[cd] > node->data[cd]) {
       // if the right branch of the node is empty
       // insert the point to that branch
-      if (node->right == NULL) {
-        node->right = new Node(point);
+      if (node->right == nullptr) {
+        // node->right = new Node(point);
+        node->right = std::make_shared<Node>(point);
         inserted = true;
       }
       // if not, then inspect the right branch in next iteration
@@ -240,7 +245,7 @@ std::string vecToStr(const std::vector<int>& vec) {
 \-----(1, 4)
        \-----(0, 3)
 */
-void printKDTreeBranches(Node* node, bool left, const std::string& prefix) {
+void printKDTreeBranches(std::shared_ptr<Node> node, bool left, const std::string& prefix) {
   if (node->right) {
     printKDTreeBranches(node->right, false, prefix + (left? "|      " : "       "));
   }
@@ -253,7 +258,7 @@ void printKDTreeBranches(Node* node, bool left, const std::string& prefix) {
   }
 }
 
-void printKDTree(Node* root) {
+void printKDTree(std::shared_ptr<Node> root) {
   if (root->right) {
     printKDTreeBranches(root->right, false, "");
   }
@@ -288,15 +293,15 @@ int main() {
   std::vector<std::vector<int>> points = read_from_csv();
   auto root_point = points.front();
 
-  Node root = Node(root_point);
-  for (int i = 1; i < points.size(); i++) {
-    kd_insert(&root, points[i]);
+  std::shared_ptr<Node> root = std::make_shared<Node>(root_point);
+  for (auto const& pt : points) {
+    kd_insert(root, pt);
   }
 
-  printKDTree(&root);
+  printKDTree(root);
 
   std::vector<int> del_point = {1, 4, 5};
-  Node *del_root = kd_delete(&root, del_point, 0);
+  std::shared_ptr<Node> del_root = kd_delete(root, del_point, 0);
 
   std::cout << "after deletion of point: " << del_point << std::endl;
   printKDTree(del_root);
