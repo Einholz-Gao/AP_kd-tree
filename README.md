@@ -1,65 +1,54 @@
-# Project: Kd-tree Version1
+# Project: Kd-tree
 
-## Authors
+Idea contributed by Andreas Döring, andreas.doering@tum.de.
 
-|Name|Email|
-|--------|--------|
-|Haozheng Huang|haozheng.huang@tum.de|
-|Yichao Gao|yichao.gao@tum.de|
+## Motivation
 
-## Instruction
+A kd-tree is a special kind of binary tree that can store points from a k-dimensional space. It can be used for efficient (space partitioning) search, meaning that at every level, the space will be divided along one dimension by comparing against one dimension of the point. At the next level the space is divided along another dimension. You can find an abstract overview [here](https://www.ri.cmu.edu/pub_files/pub1/moore_andrew_1991_1/moore_andrew_1991_1.pdf), a less abstract overview with a kd-tree of dimension 2 [here](https://www.cs.cmu.edu/~ckingsf/bioinfo-lectures/kdtrees.pdf). These resources also explain how some search strategies can be implemented.
 
-The k-d tree is a binary tree in which every node is a k-dimensional point. Every non-leaf node can be thought of as implicitly generating a splitting hyperplane that divides the space into two parts, known as half-spaces. Points to the left of this hyperplane are represented by the left subtree of that node and points to the right of the hyperplane are represented by the right subtree. The hyperplane direction is chosen in the following way: every node in the tree is associated with one of the k dimensions, with the hyperplane perpendicular to that dimension's axis. You can find more [here](https://en.wikipedia.org/wiki/K-d_tree)
+## Sprint 1
 
-![image](figures/kd-example.png)
-(Source: https://www.cs.cmu.edu/~ckingsf/bioinfo-lectures/kdtrees.pdf)
+Create a kd-tree data structure to store data with dimensionality k = 2, hence creating a 2D-tree. Optionally you can choose to go for k = 3 or k being variable.
 
-We have generated the following functions:
-- Kd-tree construction
-- Points addition and deletion
-- Read data from a csv file
+### Definion of "done"
 
-## How to build and run
-From the csv file we can get the following data:
-|Points|
-|--------|--------|
-|2,5,0|3,8,-1|
-|6,3,-2|8,9,-5|
-|1,4,5|0,3,7|
-|-3,5,11|-2,10,-6|
-|9,10,-4|-3,3,3|
+* Kd-tree can be constructed
+* Points can be added and deleted
+* Points can be read in from file
 
-Now we have a `Makefile` in the folder `/src`.
+## Sprint 2
 
-Go to the `/src` folder and run the command `make` in the terminal.
-
-Then you will get a executable file `main`.
-
-Run it. You will get the output:
-
-```bash
-              /-----(9, 10, -4)
-       /-----(8, 9, -5)
-/-----(3, 8, -1)
-|      \-----(6, 3, -2)
-(2, 5, 0)
-|      /-----(-3, 5, 11)
-|      |      \-----(-2, 10, -6)
-\-----(1, 4, 5)
-       \-----(0, 3, 7)
-              \-----(-3, 3, 3)
-after deletion of point: (1, 4, 5)
-              /-----(9, 10, -4)
-       /-----(8, 9, -5)
-/-----(3, 8, -1)
-|      \-----(6, 3, -2)
-(2, 5, 0)
-|      /-----(-2, 10, -6)
-\-----(-3, 5, 11)
-       \-----(0, 3, 7)
-              \-----(-3, 3, 3)
-
+Implement and test at least two different search strategies such as KNN search, range search or finding the minimum. This should be done using classes. Refer to the references for examples. The structure could look something like this:
 ```
-Judging by the results, we accomplished our stated goals of reading data from file, constructiong, addition and deleting trees well.
+kd-tree
+|   README.md
+|   main.cpp
+|───build
+|───data
+|      points.csv
+|───src
+|      kd-tree.cpp
+|      kd-tree.h
+|      kd-search.cpp
+|      kd-search.h
+|      CMakeLists.txt
+|───test
+|      kd-tree-test.cpp
+|      kd-search-test.cpp
+|      CMakeLists.txt
+```
 
+### Definion of "done"
 
+* Two search strategies are implemented
+* Tests are implemented as well
+
+## Sprint 3
+
+Optimize for speed and memory consumption.
+
+### Definion of "done"
+
+* Calculation time should be logged
+* Memory consumption should be logged
+* At least two performance aspects are studied and their effect and improvement approach should be presented in a short report
