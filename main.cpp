@@ -11,21 +11,28 @@ int main() {
   //                                       {-3, 5, 11},
   //                                       {-2, 10, -6}};
 
+  // load points
   std::vector<std::vector<int>> points = read_from_csv();
   auto root_point = points.front();
 
+  // build the kd tree
   std::shared_ptr<Node> root = std::make_shared<Node>(root_point);
   KD_Tree kd_tree = KD_Tree(root);
   for (auto const& pt : points) {
     kd_tree.kd_insert(root, pt);
   }
-
+  
+  // print the built kd tree
   kd_tree.printKDTree();
 
-  std::vector<int> del_point = {1, 4, 5};
-  std::shared_ptr<Node> del_root = kd_tree.kd_delete(root, del_point, 0);
+  // find the nearest neighbour
+  auto nn = kd_tree.KNN(root, {9, 10, 1000}, 0);
+  std::cout << std::endl << nn->data;
 
-  std::cout << "after deletion of point: " << del_point << std::endl;
-  kd_tree.printKDTree();
+  // delete a point in the kd tree
+  // std::vector<int> del_point = {1, 4, 5};
+  // std::shared_ptr<Node> del_root = kd_tree.kd_delete(root, del_point, 0);
+  // std::cout << "after deletion of point: " << del_point << std::endl;
+  // kd_tree.printKDTree();
   return 0;
 }

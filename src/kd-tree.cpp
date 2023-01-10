@@ -54,15 +54,15 @@ std::shared_ptr<Node> KD_Tree::findMin(std::shared_ptr<Node> node, unsigned d, u
   @param b point
   @returns the distance between two points
 */
-double distance(std::vector<int> a, std::vector<int> b) {
-  double sum = 0.0;
+float KD_Tree::distance(std::vector<int> a, std::vector<int> b) {
+  float sum = 0.0;
   for (int i = 0; i < K; i++) {
     sum += (a[i] - b[i]) * (a[i] - b[i]);
   }
   return std::sqrt(sum);
 }
-std::vector<int> ref_point;
-float ref_dist = 20000;
+// std::vector<int> _ref_point;
+// float ref_dist = 20000;
 /*
   Recursively Nearest Neighbor Searching
   @param node the root node of the tree or sub-tree
@@ -70,39 +70,82 @@ float ref_dist = 20000;
   @param cd the current dimension(x,y,z...)
   @returns a nearest point to the parameter point
 */
-std::vector<int> KNN(std::shared_ptr<Node> node, std::vector<int> point,
+std::shared_ptr<Node> KD_Tree::KNN(std::shared_ptr<Node> node, std::vector<int> point,
                       unsigned cd) {
 
-  if (node->left == nullptr && node->right == nullptr) {
-    float temp_dist = distance(point, node->data);
-    if (temp_dist < ref_dist) {
-      ref_dist = temp_dist;
-      ref_point = node->data;
-      return ref_point;
-    }
+  if (node == nullptr) {
+    return nullptr;
   }
-  else {
-    // search left first
-    if (point[cd] <= node->data[cd]) {
-      if (point[cd] - ref_dist <= node->data[cd]) {
-        KNN(node->left, point,  (cd + 1) % K);
-      }
-      else if (point[cd] + ref_dist > node->data[cd]) {
-        KNN(node->right, point,  (cd + 1) % K);
-      }
-    }
-    // search right first
-    else {
-      if (point[cd] + ref_dist > node->data[cd]) {
-        KNN(node->right, point,  (cd + 1) % K);
-      }
-      else if (point[cd] - ref_dist <= node->data[cd]) {
-        KNN(node->left, point,  (cd + 1) % K);
-      }
-    }
+
+  std::shared_ptr<Node> next_branch, other_branch;
+  if (point[cd] < node->data[cd]) {
+    next_branch = node->left;
+    other_branch = node->right;
+  } else {
+    next_branch = node->right;
+    other_branch = node->left;
   }
-  // return ref_point;
+
+  auto temp = KNN(next_branch, point, (cd+1)%K);
+  auto best = closest(temp, node, point);
+
+  float r = distance(point, best->data);
+
+  float dist = point[cd] - node->data[cd];
+
+  if (r >= dist) {
+    temp = KNN(other_branch, point, (cd+1)%K);
+    best = closest(temp, best, point);
+  }
+
+  return best;
+
+  // if (node->left == nullptr && node->right == nullptr) {
+  //   float temp_dist = distance(point, node->data);
+  //   if (temp_dist < _ref_dist) {
+  //     _ref_dist = temp_dist;
+  //     _ref_point = node->data;
+  //   }
+  // }
+  // else {
+  //   // search left first
+  //   if (point[cd] <= node->data[cd]) {
+  //     if (std::abs(point[cd] - _ref_dist) <= node->data[cd]) {
+  //       KNN(node->left, point,  (cd + 1) % K);
+  //     }
+  //     else if (std::abs(point[cd] + _ref_dist) > node->data[cd]) {
+  //       KNN(node->right, point,  (cd + 1) % K);
+  //     }
+  //   }
+  //   // search right first
+  //   else {
+  //     if (std::abs(point[cd] + _ref_dist) > node->data[cd]) {
+  //       KNN(node->right, point,  (cd + 1) % K);
+  //     }
+  //     else if (std::abs(point[cd] - _ref_dist) <= node->data[cd]) {
+  //       KNN(node->left, point,  (cd + 1) % K);
+  //     }
+  //   }
+  // }
+
 }
+
+std::shared_ptr<Node> KD_Tree::closest(std::shared_ptr<Node> n1,
+                                       std::shared_ptr<Node> n2,
+                                       std::vector<int> point) {
+  if (n1 == nullptr) return n2;
+  if (n2 == nullptr) return n1;
+
+  float d1 = distance(n1->data, point);
+  float d2 = distance(n2->data, point);
+
+  if (d1 < d2) {
+    return n1;
+  } else {
+    return n2;
+  }
+}
+
 // std::vector<int> KNN(std::shared_ptr<Node> node, std::vector<int> point,
 //                      unsigned cd) {
 //

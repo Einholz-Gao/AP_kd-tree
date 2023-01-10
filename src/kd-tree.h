@@ -21,11 +21,14 @@ class KD_Tree {
   private:
     std::shared_ptr<Node> _root_node;
   public:
+    std::vector<int> _ref_point;
+    float _ref_dist = 10000000;
     std::shared_ptr<Node> minNode(std::shared_ptr<Node>, std::shared_ptr<Node>, std::shared_ptr<Node>, int);
     std::shared_ptr<Node> findMin(std::shared_ptr<Node>, unsigned, unsigned);
     std::shared_ptr<Node> kd_delete(std::shared_ptr<Node>, std::vector<int>, int);
-    std::vector<int> KNN(std::shared_ptr<Node> , std::vector<int> , unsigned );
-    double distance(std::vector<int>, std::vector<int>);
+    std::shared_ptr<Node> KNN(std::shared_ptr<Node> , std::vector<int> , unsigned );
+    std::shared_ptr<Node> closest(std::shared_ptr<Node> n1, std::shared_ptr<Node> n2, std::vector<int> point);
+    float distance(std::vector<int>, std::vector<int>);
     void kd_insert(std::shared_ptr<Node> , const std::vector<int>& );
     void printKDTreeBranches(std::shared_ptr<Node>, bool, const std::string&);
     void printKDTree();
