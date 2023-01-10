@@ -1,5 +1,6 @@
 #include "kd-tree.h"
 #include "helper.h"
+#include <cmath>
 
 /*
   Finds the smallest node of three nodes
@@ -45,6 +46,51 @@ std::shared_ptr<Node> KD_Tree::findMin(std::shared_ptr<Node> node, unsigned d, u
     return minNode(node,
                findMin(node->left, d, depth+1),
                findMin(node->right, d, depth+1), d);
+}
+
+/*
+  calculate the distance between two points
+  @param a point
+  @param b point
+  @returns the distance between two points
+*/
+double distance(std::vector<int> a, std::vector<int> b) {
+  double sum = 0.0;
+  for (int i = 0; i < K; i++) {
+    sum += (a[i] - b[i]) * (a[i] - b[i]);
+  }
+  return std::sqrt(sum);
+}
+std::vector<int> best_point;
+int best_dist = 20;
+/*
+  Recursively Nearest Neighbor Searching
+  @param node the root node of the tree or sub-tree
+  @param point to find the nearest point to this.
+  @param cd the current dimension(x,y,z...)
+  @returns a nearest point to the parameter point
+*/
+std::vector<int> KNN(std::shared_ptr<Node> node, std::vector<int> point,
+                     unsigned cd) {
+
+  if (node == nullptr ||
+      distance(point, node->data) >
+          best_dist) { // this point must be in a base range. cant be too far.
+  } else {
+    auto dist = distance(point, node->data);
+    if (dist < best_dist) {
+      best_point = node->data;
+      best_dist = dist;
+    }
+    if (point[cd] < node->data[cd]) {
+      KNN(node->left, point, (cd + 1) % K);
+      KNN(node->right, point, (cd + 1) % K);
+    } else {
+      KNN(node->right, point, (cd + 1) % K);
+      KNN(node->left, point, (cd + 1) % K);
+    }
+  }
+  return best_point;
 }
 
 /*delete point to a kd-tree
