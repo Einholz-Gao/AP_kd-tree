@@ -61,8 +61,8 @@ double distance(std::vector<int> a, std::vector<int> b) {
   }
   return std::sqrt(sum);
 }
-std::vector<int> best_point;
-int best_dist = 20;
+std::vector<int> ref_point;
+float ref_dist = 20000;
 /*
   Recursively Nearest Neighbor Searching
   @param node the root node of the tree or sub-tree
@@ -71,27 +71,60 @@ int best_dist = 20;
   @returns a nearest point to the parameter point
 */
 std::vector<int> KNN(std::shared_ptr<Node> node, std::vector<int> point,
-                     unsigned cd) {
+                      unsigned cd) {
 
-  if (node == nullptr ||
-      distance(point, node->data) >
-          best_dist) { // this point must be in a base range. cant be too far.
-  } else {
-    auto dist = distance(point, node->data);
-    if (dist < best_dist) {
-      best_point = node->data;
-      best_dist = dist;
-    }
-    if (point[cd] < node->data[cd]) {
-      KNN(node->left, point, (cd + 1) % K);
-      KNN(node->right, point, (cd + 1) % K);
-    } else {
-      KNN(node->right, point, (cd + 1) % K);
-      KNN(node->left, point, (cd + 1) % K);
+  if (node->left == nullptr && node->right == nullptr) {
+    float temp_dist = distance(point, node->data);
+    if (temp_dist < ref_dist) {
+      ref_dist = temp_dist;
+      ref_point = node->data;
+      return ref_point;
     }
   }
-  return best_point;
+  else {
+    // search left first
+    if (point[cd] <= node->data[cd]) {
+      if (point[cd] - ref_dist <= node->data[cd]) {
+        KNN(node->left, point,  (cd + 1) % K);
+      }
+      else if (point[cd] + ref_dist > node->data[cd]) {
+        KNN(node->right, point,  (cd + 1) % K);
+      }
+    }
+    // search right first
+    else {
+      if (point[cd] + ref_dist > node->data[cd]) {
+        KNN(node->right, point,  (cd + 1) % K);
+      }
+      else if (point[cd] - ref_dist <= node->data[cd]) {
+        KNN(node->left, point,  (cd + 1) % K);
+      }
+    }
+  }
+  // return ref_point;
 }
+// std::vector<int> KNN(std::shared_ptr<Node> node, std::vector<int> point,
+//                      unsigned cd) {
+//
+//   if (node == nullptr ||
+//       distance(point, node->data) >
+//           best_dist) { // this point must be in a base range. cant be too far.
+//   } else {
+//     auto dist = distance(point, node->data);
+//     if (dist < best_dist) {
+//       best_point = node->data;
+//       best_dist = dist;
+//     }
+//     if (point[cd] < node->data[cd]) {
+//       KNN(node->left, point, (cd + 1) % K);
+//       KNN(node->right, point, (cd + 1) % K);
+//     } else {
+//       KNN(node->right, point, (cd + 1) % K);
+//       KNN(node->left, point, (cd + 1) % K);
+//     }
+//   }
+//   return best_point;
+// }
 
 /*delete point to a kd-tree
   @param node the root node of the tree or sub-tree
