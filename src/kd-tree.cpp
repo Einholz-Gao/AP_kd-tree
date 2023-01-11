@@ -54,29 +54,29 @@ std::shared_ptr<Node> KD_Tree::findMin(std::shared_ptr<Node> node, unsigned d, u
   @param b point
   @returns the distance between two points
 */
-float KD_Tree::distance(std::vector<int> a, std::vector<int> b) {
+float KD_Tree::distanceSquared(std::vector<int> a, std::vector<int> b) {
   float sum = 0.0;
   for (int i = 0; i < K; i++) {
     sum += (a[i] - b[i]) * (a[i] - b[i]);
   }
-  return std::sqrt(sum);
+  return sum;
 }
-// std::vector<int> _ref_point;
-// float ref_dist = 20000;
+
 /*
   Recursively Nearest Neighbor Searching
-  @param node the root node of the tree or sub-tree
-  @param point to find the nearest point to this.
-  @param cd the current dimension(x,y,z...)
-  @returns a nearest point to the parameter point
+  @param node the current node, which is the root of the tree or sub-tree
+  @param point the target point, whose nearest neighbour is to be located
+  @param cd the current dimension (x,y,z...)
+  @returns the nearest node to the target point
 */
-std::shared_ptr<Node> KD_Tree::KNN(std::shared_ptr<Node> node, std::vector<int> point,
-                      unsigned cd) {
-
+std::shared_ptr<Node> KD_Tree::KNN(std::shared_ptr<Node> node,
+                                   std::vector<int> point, unsigned cd) {
+  // if the node is a leaf node, return a nullptr
   if (node == nullptr) {
     return nullptr;
   }
 
+  // go to the branches recursively where the target point should belong to
   std::shared_ptr<Node> next_branch, other_branch;
   if (point[cd] < node->data[cd]) {
     next_branch = node->left;
@@ -85,60 +85,45 @@ std::shared_ptr<Node> KD_Tree::KNN(std::shared_ptr<Node> node, std::vector<int> 
     next_branch = node->right;
     other_branch = node->left;
   }
-
   auto temp = KNN(next_branch, point, (cd+1)%K);
+
+  // update the closest node under this branch
   auto best = closest(temp, node, point);
 
-  float r = distance(point, best->data);
-
+  // if there could be a closer node on the other branch of the node,
+  // traverse that branch
+  float r = distanceSquared(point, best->data);
   float dist = point[cd] - node->data[cd];
-
-  if (r >= dist) {
+  if (r >= dist * dist) {
     temp = KNN(other_branch, point, (cd+1)%K);
     best = closest(temp, best, point);
   }
 
+  // return the closest node when all the recursions unwind
   return best;
-
-  // if (node->left == nullptr && node->right == nullptr) {
-  //   float temp_dist = distance(point, node->data);
-  //   if (temp_dist < _ref_dist) {
-  //     _ref_dist = temp_dist;
-  //     _ref_point = node->data;
-  //   }
-  // }
-  // else {
-  //   // search left first
-  //   if (point[cd] <= node->data[cd]) {
-  //     if (std::abs(point[cd] - _ref_dist) <= node->data[cd]) {
-  //       KNN(node->left, point,  (cd + 1) % K);
-  //     }
-  //     else if (std::abs(point[cd] + _ref_dist) > node->data[cd]) {
-  //       KNN(node->right, point,  (cd + 1) % K);
-  //     }
-  //   }
-  //   // search right first
-  //   else {
-  //     if (std::abs(point[cd] + _ref_dist) > node->data[cd]) {
-  //       KNN(node->right, point,  (cd + 1) % K);
-  //     }
-  //     else if (std::abs(point[cd] - _ref_dist) <= node->data[cd]) {
-  //       KNN(node->left, point,  (cd + 1) % K);
-  //     }
-  //   }
-  // }
 
 }
 
+/*
+  compare the distances of the two nodes to the target point and return
+  the closer node.
+  @param n1 closest node candidate
+  @param n2 closest node to the target point by far
+  @param point target point
+  @returns a pointer to the closer node
+*/
 std::shared_ptr<Node> KD_Tree::closest(std::shared_ptr<Node> n1,
                                        std::shared_ptr<Node> n2,
                                        std::vector<int> point) {
+  // if the candidate does not exist, return the current closest node
   if (n1 == nullptr) return n2;
+  // if the current closest node does not exist, return the candidate
   if (n2 == nullptr) return n1;
 
-  float d1 = distance(n1->data, point);
-  float d2 = distance(n2->data, point);
+  float d1 = distanceSquared(n1->data, point);
+  float d2 = distanceSquared(n2->data, point);
 
+  // return the closer node
   if (d1 < d2) {
     return n1;
   } else {
@@ -146,36 +131,14 @@ std::shared_ptr<Node> KD_Tree::closest(std::shared_ptr<Node> n1,
   }
 }
 
-// std::vector<int> KNN(std::shared_ptr<Node> node, std::vector<int> point,
-//                      unsigned cd) {
-//
-//   if (node == nullptr ||
-//       distance(point, node->data) >
-//           best_dist) { // this point must be in a base range. cant be too far.
-//   } else {
-//     auto dist = distance(point, node->data);
-//     if (dist < best_dist) {
-//       best_point = node->data;
-//       best_dist = dist;
-//     }
-//     if (point[cd] < node->data[cd]) {
-//       KNN(node->left, point, (cd + 1) % K);
-//       KNN(node->right, point, (cd + 1) % K);
-//     } else {
-//       KNN(node->right, point, (cd + 1) % K);
-//       KNN(node->left, point, (cd + 1) % K);
-//     }
-//   }
-//   return best_point;
-// }
-
-/*delete point to a kd-tree
+/*
+  delete point to a kd-tree
   @param node the root node of the tree or sub-tree
   @param point the point to be deleted
   @param depth the current depth of the tree
   @returns a shared_ptr to the root of the trimmed KD tree
 */
-std::shared_ptr<Node> KD_Tree::kd_delete(std::shared_ptr<Node> node, std::vector<int> point, int depth=0)
+std::shared_ptr<Node> KD_Tree::kd_delete(std::shared_ptr<Node> node, std::vector<int> point, int depth)
 {
     // Given point is not present
     if (node == nullptr)
@@ -224,7 +187,8 @@ std::shared_ptr<Node> KD_Tree::kd_delete(std::shared_ptr<Node> node, std::vector
     return node;
 }
 
-/*insert point to a kd-tree
+/*
+  insert point to a kd-tree
   @param node the root node of the tree or sub-tree
   @param point the point to be inserted
 */
@@ -280,7 +244,8 @@ void KD_Tree::kd_insert(std::shared_ptr<Node> node, const std::vector<int>& poin
 \-----(1, 4)
        \-----(0, 3)
 */
-/*print KD Tree branches, auxiliary function for printing KD Tree,
+/*
+  print KD Tree branches, auxiliary function for printing KD Tree,
   to be called inside printKDTree().
   @param node current node
   @param left tells whether the branch to be printed is a left branch
@@ -299,7 +264,8 @@ void KD_Tree::printKDTreeBranches(std::shared_ptr<Node> node, bool left, const s
   }
 }
 
-/*print KD Tree
+/*
+  print KD Tree
   @param root the root of KD Tree
 */
 void KD_Tree::printKDTree() {

@@ -1,4 +1,5 @@
 #include "helper.h"
+#include "kd-tree.h"
 
 /*
   read points from csv file

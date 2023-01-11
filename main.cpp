@@ -26,13 +26,14 @@ int main() {
   kd_tree.printKDTree();
 
   // find the nearest neighbour
-  auto nn = kd_tree.KNN(root, {9, 10, 1000}, 0);
-  std::cout << std::endl << nn->data;
+  std::vector<int> target_point = {1, 7, 10};
+  auto nn = kd_tree.KNN(root, target_point);
+  std::cout << "nearest neighbour of " << target_point << ": " << nn->data << std::endl;
 
   // delete a point in the kd tree
-  // std::vector<int> del_point = {1, 4, 5};
-  // std::shared_ptr<Node> del_root = kd_tree.kd_delete(root, del_point, 0);
-  // std::cout << "after deletion of point: " << del_point << std::endl;
-  // kd_tree.printKDTree();
+  std::vector<int> del_point = {1, 4, 5};
+  std::shared_ptr<Node> del_root = kd_tree.kd_delete(root, del_point);
+  std::cout << "after deletion of point: " << del_point << std::endl;
+  kd_tree.printKDTree();
   return 0;
 }
