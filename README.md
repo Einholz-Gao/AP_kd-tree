@@ -21,7 +21,8 @@ We have generated the following functions:
 
 ## How to build and run
 From the csv file we can get the following data:
-|Points|
+
+|Points| |
 |--------|--------|
 |2,5,0|3,8,-1|
 |6,3,-2|8,9,-5|
@@ -29,13 +30,15 @@ From the csv file we can get the following data:
 |-3,5,11|-2,10,-6|
 |9,10,-4|-3,3,3|
 
-Now we have a `Makefile` in the folder `/src`.
+Now we have a `Cmakelist.txt`.
 
-Go to the `/src` folder and run the command `make` in the terminal.
+Run the command `cmake .` in the terminal.
 
-Then you will get a executable file `main`.
+Then you will get a `Makefile` in the folder.
 
-Run it. You will get the output:
+Run `make` in the terminal. You will get the exe file: `main`
+
+Run it.
 
 ```bash
               /-----(9, 10, -4)
