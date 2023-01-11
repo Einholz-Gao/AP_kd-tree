@@ -25,8 +25,10 @@ int main() {
   // print the built kd tree
   kd_tree.printKDTree();
 
+  std::vector<std::vector<int>> KNN_points = read_from_csv("data/KNN_point.csv");
+  auto KNN_point = KNN_points.front();
   // find the nearest neighbour
-  auto nn = kd_tree.KNN(root, {9, 10, 1000}, 0);
+  auto nn = kd_tree.KNN(root, KNN_point, 0);
   std::cout << std::endl << nn->data;
 
   // delete a point in the kd tree
