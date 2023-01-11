@@ -1,1 +1,7 @@
 *.out
+.vscode
+Makefile
+main
+CMakeCache.txt
+cmake_install.cmake
+CMakeFiles
