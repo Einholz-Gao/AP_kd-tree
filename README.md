@@ -22,7 +22,7 @@ We have generated the following functions:
 ## How to build and run
 From the csv file we can get the following data:
 
-|Points|
+|Points| |
 |--------|--------|
 |2,5,0|3,8,-1|
 |6,3,-2|8,9,-5|
