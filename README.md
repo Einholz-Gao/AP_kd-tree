@@ -78,15 +78,27 @@ From the csv file we can get the following data:
 To build and run:
 
 1. Run the command in the terminal.  
-   `cmake .`  
+
+```bash
+cmake .
+```
+
    Then you will get a `Makefile` in the folder.
 
 2. Run the command in the terminal.  
-   `make`  
+
+```bash
+make 
+```
+
    You will get the exe file: `main`
 
 3. Run it.  
-   `./main`  
+
+```bash
+./main
+```
+
    You will get this result on the terminal.
 
 ```bash
@@ -151,16 +163,31 @@ make
 4. If all is right, you will see:
 
 ```bash
-[==========] Running 1 test from 1 test suite.
+[==========] Running 2 tests from 1 test suite.
 [----------] Global test environment set-up.
-[----------] 1 test from treetest
+[----------] 2 tests from treetest
 [ RUN      ] treetest.KNN_search
 point overlap at dimension 0
 [       OK ] treetest.KNN_search (0 ms)
-[----------] 1 test from treetest (0 ms total)
+[ RUN      ] treetest.find_min
+point overlap at dimension 0
+[ Message  ] This is the KD-Tree:
+       /-----(9, 12, 24)
+/-----(10, 4, 16)
+(8, 8, 3)
+\-----(5, 8, 6)
+       \-----(2, 5, 1)
+[       OK ] treetest.find_min (0 ms)
+[----------] 2 tests from treetest (0 ms total)
 
 [----------] Global test environment tear-down
-[==========] 1 test from 1 test suite ran. (0 ms total)
-[  PASSED  ] 1 test.
+[==========] 2 tests from 1 test suite ran. (0 ms total)
+[  PASSED  ] 2 tests.
+```
 
+5. If `CMakeList.txt` works not good, you have also this alternative:
+
+```bash
+g++  kd-search-test.cpp -o kd-search-test -lgtest -lpt
+./kd-search-test
 ```
