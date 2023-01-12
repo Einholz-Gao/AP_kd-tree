@@ -64,6 +64,7 @@ float KD_Tree::distanceSquared(std::vector<int> a, std::vector<int> b) {
 
 /*
   Recursively Nearest Neighbor Searching
+  Reference https://bitbucket.org/StableSort/play/src/master/src/com/stablesort/kdtree/KDTree.java
   @param node the current node, which is the root of the tree or sub-tree
   @param point the target point, whose nearest neighbour is to be located
   @param cd the current dimension (x,y,z...)
