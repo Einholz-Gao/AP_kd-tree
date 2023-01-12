@@ -30,15 +30,15 @@ From the csv file we can get the following data:
 |-3,5,11|-2,10,-6|
 |9,10,-4|-3,3,3|
 
-Now we have a `Cmakelist.txt`.
+Now we have a `Cmakelist.txt`. To build and run:
 
-Run the command `cmake .` in the terminal.
+1. Run the command `cmake .` in the terminal.
 
-Then you will get a `Makefile` in the folder.
+   Then you will get a `Makefile` in the folder.
 
-Run `make` in the terminal. You will get the exe file: `main`
+2. Run `make` in the terminal. You will get the exe file: `main`
 
-Run it.
+3. Run it. You will get this result on the terminal.
 
 ```bash
               /-----(9, 10, -4)
@@ -65,4 +65,32 @@ after deletion of point: (1, 4, 5)
 ```
 Judging by the results, we accomplished our stated goals of reading data from file, constructiong, addition and deleting trees well.
 
+## How to test our search function
 
+In the folder `test` we have a `kd-search-test.cpp` based on the Gtest frame.
+
+To test the function of KNN:
+
+1. Go to the folder `test` and run these commands:
+```bash
+cmake .
+make
+```
+2. Run the exe file
+```bash
+./kd-search-test
+```
+3. If all is right, you will see:
+```bash
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from treetest
+[ RUN      ] treetest.KNN_search
+point overlap at dimension 0
+[       OK ] treetest.KNN_search (0 ms)
+[----------] 1 test from treetest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+```

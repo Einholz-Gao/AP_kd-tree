@@ -30,6 +30,7 @@ class KD_Tree {
     std::shared_ptr<Node> findMin(std::shared_ptr<Node> node, unsigned d, unsigned depth);
     std::shared_ptr<Node> kd_delete(std::shared_ptr<Node> node, std::vector<int> point, int depth=0);
     std::shared_ptr<Node> KNN(std::shared_ptr<Node> node, std::vector<int> point, unsigned cd=0);
+    std::vector<int> KNN_point(std::vector<int> point);
     std::shared_ptr<Node> closest(std::shared_ptr<Node> n1, std::shared_ptr<Node> n2, std::vector<int> point);
     float distanceSquared(std::vector<int> a, std::vector<int> b);
     void kd_insert(std::shared_ptr<Node> node, const std::vector<int>& point);

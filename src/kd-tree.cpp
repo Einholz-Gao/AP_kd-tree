@@ -104,6 +104,11 @@ std::shared_ptr<Node> KD_Tree::KNN(std::shared_ptr<Node> node,
 
 }
 
+std::vector<int> KD_Tree::KNN_point(std::vector<int> point){
+
+  return KNN(_root_node,point,0)->data;
+}
+
 /*
   compare the distances of the two nodes to the target point and return
   the closer node.
