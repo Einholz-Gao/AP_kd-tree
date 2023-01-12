@@ -90,6 +90,7 @@ To build and run:
    You will get this result on the terminal.
 
 ```bash
+point overlap at dimension 0
               /-----(9, 10, -4)
        /-----(8, 9, -5)
 /-----(3, 8, -1)
@@ -100,6 +101,7 @@ To build and run:
 \-----(1, 4, 5)
        \-----(0, 3, 7)
               \-----(-3, 3, 3)
+nearest neighbour of (7, 8, -4): (8, 9, -5)
 after deletion of point: (1, 4, 5)
               /-----(9, 10, -4)
        /-----(8, 9, -5)
@@ -110,7 +112,6 @@ after deletion of point: (1, 4, 5)
 \-----(-3, 5, 11)
        \-----(0, 3, 7)
               \-----(-3, 3, 3)
-
 ```
 Judging by the results, we accomplished our stated goals of reading data from file, constructiong, addition and deleting trees well.
 
